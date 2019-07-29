@@ -9,6 +9,8 @@
 #include "measurement_package.h"
 #include "tools.h"
 
+using Eigen::MatrixXd;
+
 class FusionEKF {
  public:
   /**
@@ -26,6 +28,8 @@ class FusionEKF {
    */
   void ProcessMeasurement(const MeasurementPackage &measurement_pack);
 
+  MatrixXd SetupQ(float dt, float noise_ax, float noise_ay);
+
   /**
    * Kalman Filter update and prediction math lives in here.
    */
@@ -40,10 +44,16 @@ class FusionEKF {
 
   // tool object used to compute Jacobian and RMSE
   Tools tools;
+
+  // measurement covariance matrix
   Eigen::MatrixXd R_laser_;
   Eigen::MatrixXd R_radar_;
-  Eigen::MatrixXd H_laser_;
-  Eigen::MatrixXd Hj_;
+
+  // Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
+  float noise_ax = 9;
+  float noise_ay = 9;
+  
+  int iter_ = 1;
 };
 
 #endif // FusionEKF_H_
